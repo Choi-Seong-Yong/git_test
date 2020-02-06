@@ -1,7 +1,0 @@
-npm
-
-axios
-vuex
-vue-router
-
-vue-virtual-scroll-list
