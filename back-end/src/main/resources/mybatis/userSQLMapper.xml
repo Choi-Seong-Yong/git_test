@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssafy.user">
+	<select id="login" parameterType="UserVo" resultType="UserVo">
+		select * from users
+		where
+			user_id = #{user_id} and
+			password = #{password}
+	</select>
+
+	<update id="loginTime" parameterType="string">
+		update users set timestamp = now()
+		where user_id = #{user_id}
+	</update>
+	
+	<select id="info" parameterType="string" resultType="UserVo">
+		select * from users
+		where
+			user_id = #{user_id}
+	</select>
+	
+	<insert id="signup" parameterType="UserVo">
+		insert into users
+			(user_id, password, tel, email, interest, dislike, description, profile_url, profile_filter)
+		values
+			(#{user_id}, #{password}, #{tel}, #{email}, #{interest}, #{dislike}, #{description}, #{profile_url}, #{profile_filter})
+	</insert>
+	
+	<update id="updateUserInfo" parameterType="UserVo">
+		update users
+		set
+			password = #{password},
+			tel = #{tel},
+			email = #{email},
+			interest = #{interest},
+			dislike = #{dislike},
+			description = #{description},
+			profile_url = #{profile_url},
+			profile_filter = #{profile_filter}
+		where
+			user_id = #{user_id}
+	</update>
+	
+	<delete id="deleteUserInfo" parameterType="string">
+		delete from users
+		where user_id = #{user_id}
+	</delete>
+
+	<update id="updateTempPw" parameterType="map">
+		update users
+		set
+			password = #{password}
+		where
+			email = #{email}
+	</update>
+
+	<update id="updateUserStatus">
+		<![CDATA[ 
+			update users
+			set
+				status = false
+			where
+				datediff(now(), timestamp) > 30
+		]]>
+	</update>
+
+	<update id="updateUserStatusBack" parameterType="string">
+		update users
+		set
+			status = true
+		where
+			user_id = #{user_id}
+	</update>
+
+	<select id="emailDuplicateCheck" parameterType="string" resultType="boolean">
+		select exists ( select * from users where email = #{email}) as exist
+	</select>
+
+	<select id="searchByUserId" parameterType="string" resultType="UserVo">
+		select * from users
+		where user_id like concat(#{keyword}, '%')
+	</select>
+
+	<select id="searchByInterest" parameterType="java.util.List" resultType="UserVo">
+		select * from users
+		where 1 and
+		<foreach collection="list" item="keyword" separator="and">
+			interest like concat('%', #{keyword}, '%')
+		</foreach>
+	</select>
+
+	<select id="userList" resultType="UserVo">
+		select * from users
+	</select>
+
+	<select id="interest" resultType="string">
+		select interest from users
+	</select>
+	
+	<select id="todayvisit" resultType="string">
+		select count(*)
+		from users
+		where DATE(timestamp) = DATE(NOW());
+	</select>
+	
+	<select id="totalcontents" resultType="int" parameterType="Integer">
+		select count(*) 
+		from contents 
+		where month(timestamp)=#{month}
+	</select>
+	
+</mapper>
