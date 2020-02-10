@@ -83,6 +83,7 @@
                   name:'useredit',
                   params:{
                     oldpw:this.upw,
+                    prevpage: "confirm",
                   }
                 });
               } else {

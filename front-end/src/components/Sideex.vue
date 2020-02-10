@@ -125,10 +125,12 @@ export default {
         this.$socket.on('notification', (data) => {
         //   window.console.log('notification', data, this.$store.state.user_id);
         if(data.target_user_id == this.$store.state.user_id){
-            this.$snotify.simple('알림을 확인해보세요!', data.user_id + "님의 " + data.category+"!", {
-                icon : '/theme/images/'+data.category+'.png',
-                // html : '<div>Like!</div><div>알림을 확인해보세요!</div>'
-            });
+            if(data.flag){
+                this.$snotify.simple('알림을 확인해보세요!', data.user_id + "님의 " + data.category+"!", {
+                    icon : '/theme/images/'+data.category+'.png',
+                    // html : '<div>Like!</div><div>알림을 확인해보세요!</div>'
+                });
+            }
             http.get(`/notification/countUnchecked/${this.$store.state.user_id}`)
             .then((response) => {
                 this.notify = response.data.resvalue;

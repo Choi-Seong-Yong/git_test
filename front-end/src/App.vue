@@ -5,7 +5,7 @@
     <Sideex />
     <main class="main-content">
       <!-- 공지 -->
-      <div class="top-noti" style="background-color:black;width:100%">
+      <div class="top-noti" style="background-color:black;width:101%">
         <div class="text-white offset-4 col-1" style="text-align:right; display:inline-block;"><span class="icon-notifications_active neon"></span></div>
         <div class="all-scroll col-3 mt-50" style="width:100%; display:inline-block;">
           <div class="swiper-scrollbar"></div>
@@ -42,14 +42,14 @@
     </main>
     <!-- modal -->
     <p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p>
-    <div class="modal fade" id="myModal" style="position:absolute; top:50px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-body" style="text-align:center;">
             {{$store.state.modalText}}
           </div>
           <div class="modal-footer">
-            <button type="button" id="modalClose" class="btn btn-danger text-white" data-dismiss="modal">닫기</button>
+            <button type="button" id="modalClose-btn" class="btn btn-danger text-white" data-dismiss="modal">닫기</button>
           </div>
         </div>
       </div>
@@ -115,6 +115,9 @@ export default {
 
   },
   updated() {
+    //modal 뜰 때 body에 padding 붙는거 없애주는거
+    document.body.style.paddingRight = 0;
+    
       let recaptchaScripta = document.createElement('script')
       recaptchaScripta.setAttribute('type',"text/javascript")
       recaptchaScripta.setAttribute('src', "./theme/js/script.js")
@@ -139,5 +142,21 @@ export default {
   word-wrap:normal;
   width:180px;
   overflow:hidden;
+}
+#myModal{
+  z-index:99999;
+}
+
+@media (min-width: 992px) {
+  #myModal{
+    padding-right:0px;
+    position:absolute;
+    top:50px;
+  }
+}
+@media (max-width: 991.98px) {
+  #myModal{
+    top:255px;
+  }
 }
 </style>

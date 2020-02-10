@@ -96,12 +96,12 @@ export default {
   data() {
     return {
         temp: [],
-        userId: '',
+        userId: this.$store.state.user_id,
         check: true,
         check2: false,
         userDm: {},
         socket: null,
-        targetId: this.$store.state.targetId
+        targetDm: this.$store.state.targetDm
     }
   },
   computed: {
@@ -147,44 +147,21 @@ export default {
         user_id: this.userId,
         other_id: follow,
       };
-      this.fetchedUserDmList.push({
-        user_id: this.userId,
-        other_id: follow,
-      });
+      this.fetchedUserDmList.push(userDm);
+      // console.log(this.fetchedUserDmList, userDm);
       this.$store.dispatch('INSERT_USERDM', userDm);
-      this.check = true;
-
-      for (let i in this.fetchedUserDmList) {
-        if (this.fetchedUserDmList[i].other_id == follow || this.fetchedUserDmList[i].user_id == follow) {
-          this.selectUserDm(this.fetchedUserDmList[i]);
-          break
-        }
-      }
-      // this.chatings.push({
-      //   dm_id: 3,
-      //   user_id: this.userId,
-      //   other_id: friend,
-      //   recent_message: '',
-      //   timestamp: '3:00',
-      //   cnt: 0
-      // });
-      // this.selectChating(chating);
     },
     insertDirectMessage(message) {
-        // 소켓으로 메시지 전송
-        // this.$sendMessage(message);
+      // 소켓으로 메시지 전송
+      // this.$sendMessage(message);
 
-        this.socket.emit('chat', message);
-        // window.console.log(message);
+      this.socket.emit('chat', message);
+      // window.console.log(message);
 
-        this.$store.dispatch('INSERT_DIRECTMESSAGE', message);
-        this.$store.dispatch('UPDATE_RECENTMESSAGE', message);
+      this.$store.dispatch('INSERT_DIRECTMESSAGE', message);
+      this.$store.dispatch('UPDATE_RECENTMESSAGE', message);
 
     },
-    // scrollToEnd() {
-    //   var container = this.$el.querySelector("#container");
-    //   container.scrollTop = container.scrollHeight;
-    // },
     sendNotification(){
       // this.$socket.emit('notification', {
       //   user_id: 'kimbh',
@@ -192,9 +169,6 @@ export default {
       //   category: 'like'
       // });
     },
-    getResult(callback) {
-      callback();
-    }
   },
 
   // beforeCreate() {
@@ -259,29 +233,14 @@ export default {
 
     this.$store.dispatch('FETCH_FOLLOWLIST', this.userId);
     this.$store.dispatch('FETCH_USERDMLIST', this.userId);
-    
-    if (this.targetId != '') {
-      const ok = true;
-
-      console.log(this.targetId)
-      var a = function() {
-        for (let i in this.fetchedUserDmList) {
-          if (this.fetchedUserDmList[i].other_id == this.targetId || this.fetchedUserDmList[i].user_id == this.targetId) {
-            this.selectUserDm(this.fetchedUserDmList[i]);
-            this.ok = false;
-          }
-        }
-      }
-      
-      this.getResult(a);
-
-      if (ok) {
-        this.insertUserDm(this.targetId);
-      }
-      this.$store.commit('REMOVE_TARGETID');
+  },
+  created() {
+    // 선택한 유저가 있을 때
+    if (this.targetDm) {
+      this.selectUserDm(this.targetDm);
+      console.log(this.targetDm)
     }
   },
-
   beforeDestroy(){
     this.socket.emit('disconnectEvt', function(){});
     // this.$socket = io('http://192.168.100.41:3000');

@@ -2,15 +2,15 @@
   <div class="container-fluid photos">
     <div class="row justify-content-center">
 
-      <div class="col-md-6 pt-4" data-aos="fade-up">
+      <div class="col-6 pt-4" data-aos="fade-up">
         <h2 class="text-white mb-4">Useredit</h2>
 
 
         <div class="row">
-          <div class="col-md-12">
-            <p class="mb-5">Lorem ipsum dolor sit amet, consectetur <a href="#">adipisicing</a> elit.</p>
+          <div class="col-12">
+            <!-- <p class="mb-5">Lorem ipsum dolor sit amet, consectetur <a href="#">adipisicing</a> elit.</p> -->
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-12">
                 <form action="" method="post" @submit.prevent="edit">
                   <div style="display:none">
                     <input type="submit" onclick="return false;" />
@@ -21,22 +21,22 @@
                     class="inputfile" @dragover.prevent @dragenter.prevent @drop.prevent="dragupload"
                     v-on:change="fileUpload" />
                   <div class="row form-group">
-                    <div class="col-md-12">
+                    <div class="col-12">
                       <label class="text-white" for="uid">Profile</label>
                       <div class="d-flex bd-highlight">
-                        <div class="w-25 bd-highlight">
+                        <div class="col-12 bd-highlight">
                           <div v-if="!this.imginfo.base64" class="selected-image"
-                            style="margin-bottom:0px; border:2px solid white;" @dragover.prevent @dragenter.prevent
-                            @drop.prevent="dragupload" v-on:change="fileUpload">
+                            style="border:2px solid white;" @dragover.prevent @dragenter.prevent
+                            @drop.prevent="dragupload" v-on:change="fileUpload"  @click="$refs.fileInput.click()">
                             <div style="height:35%"></div>
-                            <div @click="$refs.fileInput.click()"
+                            <div
                               style="margin:auto; width:20%; height:35%; background-size:contain; background-repeat:no-repeat; background-image:url('./theme/images/plus.png')">
                             </div>
                             <!-- <span>이미지를 drag&drop하거나 +를 클릭하여 추가해주세요.</span> -->
                           </div>
 
-                          <div v-else @click="$refs.fileInput.click()" :class="imginfo.filter" id="img-select">
-                            <img :src=imginfo.base64 class="img-fluid" style="height:100px;">
+                          <div v-else @click="$refs.fileInput.click()" v-on:change="fileUpload" :class="imginfo.filter" class="selected-image" id="img-select">
+                            <img :src=imginfo.base64 class="img-fluid" style="height:30vw;">
                           </div>
                           <input type="button" @click="imgdel" value="x"/>
 
@@ -164,7 +164,11 @@
     padding-left: 0;
     padding-right: 0;
   }
-
+  .selected-image{
+    margin-bottom:0px;
+    height:30vw;
+    background-size: cover;
+  }
   .roundedge {
     border-radius: 5px;
     display: inline-block;
@@ -182,7 +186,7 @@
   import http from "../http-common"
   export default {
     name: "useredit",
-    props: ["imgs", "oldpw"],
+    props: ["imgs", "oldpw", "prevpage"],
     data() {
       return {
         uid: this.$store.state.user_id,
@@ -218,6 +222,9 @@
 
 
     mounted() {
+      if(this.prevpage!="confirm"){
+        this.$router.push("/pwconfirm");
+      }
       var tmp;
       $('html').scrollTop(0);
       http
@@ -358,7 +365,8 @@
       },
       imgdel(){
         this.imginfo.base64  = "",
-        this.imginfo.img ="",
+        this.imginfo.filter = "normal",
+        // this.imginfo.img ="",
         this.image="",
         this.regimgs=""
       },

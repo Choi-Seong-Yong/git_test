@@ -294,6 +294,14 @@ export default {
                 timestamp: this.contents[idx].timestamp,
                 user_id: this.loginId
               })
+              .then((response) =>{
+                this.$socket.emit('notification', {
+                  user_id: response.data.resValue.user_id,
+                  target_user_id: response.data.resValue.target_user_id,
+                  category: response.data.resValue.category,
+                  flag: true,
+                });
+              })
               .catch(()=>{
                 this.errored = true;
               })
@@ -306,6 +314,14 @@ export default {
                   timestamp: this.contents[idx].timestamp,
                   user_id: this.loginId
                 }
+              })
+              .then((response) =>{
+                this.$socket.emit('notification', {
+                  user_id: response.data.resValue.user_id,
+                  target_user_id: response.data.resValue.target_user_id,
+                  category: response.data.resValue.category,
+                  flag: false,
+                });
               })
               .catch(()=>{
                 this.errored = true;
@@ -327,6 +343,14 @@ export default {
               follow_id: user,
               follower_id: this.loginId
             }
+          })
+          .then(response => {
+            this.$socket.emit('notification', {
+              user_id: response.data.resValue.user_id,
+              target_user_id: response.data.resValue.target_user_id,
+              category: response.data.resValue.category,
+              flag: false
+            });
           })
           .catch(()=>{
             this.errored = true;
@@ -352,6 +376,14 @@ export default {
           .post('/follow/insertFollow', {
             follow_id: user,
             follower_id: this.loginId
+          })
+          .then(response => {
+            this.$socket.emit('notification', {
+              user_id: response.data.resValue.user_id,
+              target_user_id: response.data.resValue.target_user_id,
+              category: response.data.resValue.category,
+              flag: true
+            });
           })
           .catch(()=>{
             this.errored = true;
@@ -426,7 +458,8 @@ export default {
               this.$socket.emit('notification', {
                   user_id: res.data.resValue.user_id,
                   target_user_id: res.data.resValue.target_user_id,
-                  category: res.data.resValue.category
+                  category: res.data.resValue.category,
+                  flag:true
                 });
             } else {
               console.log(res.data.resmsg)
@@ -449,7 +482,13 @@ export default {
               return item.contentId === id
             })
             if (res.data.resmsg === "스크랩취소성공") {
-              this.contents[idx2].scrapButton = false
+              this.contents[idx2].scrapButton = false;
+              this.$socket.emit('notification', {
+                  user_id: res.data.resValue.user_id,
+                  target_user_id: res.data.resValue.target_user_id,
+                  category: res.data.resValue.category,
+                  flag:false
+                });
             } else {
               console.log(res.data.resmsg)
               this.contents[idx2].scrapButton = false
@@ -472,6 +511,12 @@ export default {
         .then((res) => {
           this.reportMyList = []
           if (res.data.resmsg == "신고 성공") {
+            this.$socket.emit('notification', {
+                  user_id: res.data.resValue.user_id,
+                  target_user_id: res.data.resValue.target_user_id,
+                  category: res.data.resValue.category,
+                  flag:true
+                });
             console.log("신고 성공!!")
           } else {
             console.log("신고 실패")
@@ -500,6 +545,12 @@ export default {
               .then((res) => {
                 console.log(res.data.resmsg)
                 if (res.data.resmsg == "신고취소성공") {
+                  this.$socket.emit('notification', {
+                    user_id: res.data.resValue.user_id,
+                    target_user_id: res.data.resValue.target_user_id,
+                    category: res.data.resValue.category,
+                    flag:false
+                  });
                   this.reportMyList = []
                 }
               })

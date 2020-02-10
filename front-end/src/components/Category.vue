@@ -3,25 +3,16 @@
       <div class="row align-items-stretch">
         <div class="col-6 col-md-6 col-lg-4" style="padding: 10px 10px" v-for="item in Items" :key="item.id">
           <div class="d-block photo-item">
-            <div class="all-scroll pos-relative mt-50">
-              <div class="swiper-scrollbar"></div>
-              <div class="swiper-container oflow-visible" data-slide-effect="coverflow" data-autoheight="false"  data-swiper-wheel-control="true"
-                                        data-swiper-speed="1000" data-swiper-margin="25" data-swiper-slides-per-view="1"
-                                        data-swiper-breakpoints="true" data-swiper-autoplay="false" data-scrollbar="true"
-                                        data-swiper-loop="false" data-swpr-responsive="[1, 2, 1, 2]">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide polaroid" v-for="img in item.imageList" :key="img.index">
-                        <div v-on:click="goDetail(item.content_id)" :class="img.filter" class="" style="width:100%; height:300px">
-                          <img :src="img.image_url" style="box-shadow: 3px 3px 3px;" alt="Image"/>
-                          <!-- <div style="text-align:right;">from {{item.user_id}}</div> -->
-                        </div>
-                    </div>
+            <div class="polaroid">
+                <div v-on:click="goDetail(item.content_id)" :class="item.imageList[0].filter" class="" style="width:100%; height:300px">
+                  <img :src="item.imageList[0].image_url" style="box-shadow: 3px 3px 3px;" alt="Image"/>
+                  <!-- <div style="text-align:right;">from {{item.user_id}}</div> -->
                 </div>
-              </div>
             </div>
             <!-- -->
               <div class="photo-text-more">
-                <div class="" data-aos="fade-up">
+                <!-- <div class="" data-aos="fade-up"> -->
+                <div class="">
                   <div class="d-block photo-item">
                     <div class="postcard">
                       <div class="content">
@@ -225,7 +216,8 @@ export default {
                 this.$socket.emit('notification', {
                   user_id: response.data.resValue.user_id,
                   target_user_id: response.data.resValue.target_user_id,
-                  category: response.data.resValue.category
+                  category: response.data.resValue.category,
+                  flag: true,
                 });
               })
               .catch(()=>{
@@ -240,6 +232,14 @@ export default {
                   timestamp: this.Items[idx].timestamp,
                   user_id: this.uid
                 }
+              })
+              .then((response) =>{
+                this.$socket.emit('notification', {
+                  user_id: response.data.resValue.user_id,
+                  target_user_id: response.data.resValue.target_user_id,
+                  category: response.data.resValue.category,
+                  flag: false,
+                });
               })
               .catch(()=>{
                 this.errored = true;
