@@ -11,13 +11,13 @@
                   <div class="stamp" style=" margin:1px; float:right; background-color:white; height:50px; width:50px;">
                   </div>
                 </div>
-                <div :class="items.profile_filter">
-                  <img :src="items.profile_url" style="width:37px;height:37px; z-index:4; background: none;"
-                    class="stamp-img" />
+                <div class="stamp-img" style="top:25px;right:25px;height:41px;width:41px;z-index:3;background-color:white;"></div>
+                <div :class="items.profile_filter" class="stamp-img" style="height:37px;z-index:4;">
+                  <img :src="items.profile_url" style="width:37px;height:37px; background: none;" />
                 </div>
                 <!-- <img :src="items.profile_url" :class="items.profile_filter" style="width:37px;height:37px; z-index:4;"
                   class="stamp-img" /> -->
-                <img src="../../public/theme/images/stamp1.png" style="width:45px;height:45px; z-index:5;"
+                <img src="../../public/theme/images/stamp1.png" style="width:45px;height:45px; z-index: 5;"
                   alt="Postage mark" class="postmark">
                 <!-- 끝 -->
                 <div class="col-12 col-lg-6"
@@ -27,7 +27,7 @@
                   </div>
                   <div class="detail-mail-message mail-message offset-2 col-8"
                     style="color:black; font-family: loveson; word-break:break-all;text-align:left;"
-                    v-html="items.content_val">
+                    v-html="change_content_val">
                   </div>
                   <div class="col-11 col-offset-1"
                     style="color:black; font-family: loveson; word-break:break-all; vertical-align:bottom; text-align:right;">
@@ -203,7 +203,7 @@
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div v-if="!nohashtag">
                     <span v-for="(tag, index) in items.hashtagList" :key="index"><input @click="contentListHashtag(tag)"
                         style="margin-left:5px; margin-right:5px;" type="button" class="btn btn-outline-info"
                         :value="'#'+tag" /></span>
@@ -212,6 +212,13 @@
                     style="margin-top:20px; padding-left:20px; color:#007acc;">
                     <img style="width:20px; height:20px; margin-bottom:7px;" src="/theme/images/placeholder.png" />
                     <span style="cursor:pointer;" @click="findLocation"> {{items.location_name}}</span>
+                  </div>
+                  <div v-if="items.user_id == uid" style="margin-top:20px; padding-left:20px; color:#007acc;">
+                    <input type="button" @click="updateContent" class="bio-btn btn btn-outline-info btn-block"
+                      value="수정">
+                    <input type="button" @click="deleteContent" class="bio-btn btn btn-outline-primary btn-block"
+                      value="삭제">
+                    <!-- <span style="cursor:pointer;" @click="findLocation"> {{items.location_name}}</span> -->
                   </div>
                 </div>
               </div>
@@ -231,7 +238,6 @@
     props: ['cid'],
     data() {
       return {
-        tmpconid: "0",
         bell: this.iconbell,
         contentId: "",
         items: {},
@@ -242,6 +248,8 @@
         comments: {},
         tempComments: [],
         editflg: false,
+        change_content_val: "",
+        nohashtag:false,
       }
     },
     methods: {
@@ -349,13 +357,16 @@
                 this.items.profile_filter = "normal";
               }
               // this.items['content_val'] = this.items['content_val'].replace(/\r/g, "<br />");
-              this.items['content_val'] = this.items['content_val'].replace(/\n/g, "<br />");
-              window.console.log(this.items['location_name']);
+              this.change_content_val = this.items['content_val'].replace(/\n/g, "<br />");
+              // console.log(this.items.hashtagList)
+              if(this.items.hashtagList.length==0||this.items.hashtagList[0]==""){
+                this.nohashtag = true;
+              }
             }
           });
         // 댓글출력
         http
-          .get('/comment/commentsList/' + this.tmpconid)
+          .get('/comment/commentsList/' + this.cid)
           .then((res) => {
             if (res.data.resmsg == "댓글 출력성공") {
               this.comments = res.data.resvalue;
@@ -366,8 +377,7 @@
                   this.comments[i].check = false;
                 }
               }
-              console.log(this.comments)
-              if (this.comment[i] > 3) {
+              if (this.comments.length > 3) {
                 this.isComment = true;
               } else {
                 this.isComment = false;
@@ -379,14 +389,14 @@
 
           });
 
-        if (this.comments.length != 0) {
-          this.comments.some(comment => {
-            if (this.tempComments.length >= 2) {
-              return true;
-            }
-            this.tempComments.push(comment);
-          })
-        }
+        // if (this.comments.length != 0) {
+        //   this.comments.some(comment => {
+        //     if (this.tempComments.length >= 2) {
+        //       return true;
+        //     }
+        //     this.tempComments.push(comment);
+        //   })
+        // }
       },
       // fancy() {
       //   $.fancybox.open([{
@@ -414,7 +424,7 @@
           http
             .post("comment/insertComment", {
               re_comment_id: "",
-              content_id: this.contentId,
+              content_id: this.cid,
               user_id: this.$store.state.user_id,
               target_id: "",
               comment_val: this.comment_val,
@@ -442,7 +452,7 @@
         http
           .post("comment/insertReComment", {
             comment_id: commentid,
-            content_id: this.contentId,
+            content_id: this.cid,
             user_id: this.$store.state.user_id,
             target_id: "",
             comment_val: this.re_comment_val,
@@ -466,7 +476,6 @@
       },
 
       findLocation() {
-        window.console.log(this.items['lat']);
         this.$router.push({
           name: "findcontent",
           params: {
@@ -484,6 +493,35 @@
             tag: tag
           }
         });
+      },
+      deleteContent() {
+        http
+          .delete("content/deleteContent/" + this.items.content_id)
+          .then(response => {
+            if (response.data['resmsg'] == "게시물 삭제 성공") {
+              this.$store.commit('setModalText', '게시물 삭제 성공');
+              document.getElementById('modalBtn').click();
+              this.$router.go(-1);
+            } else {
+              this.$store.commit('setModalText', "게시물 삭제 실패");
+              document.getElementById('modalBtn').click();
+            }
+
+          })
+          .catch((error) => {
+            this.errored = true;
+            alert(error);
+          })
+          .finally(() => (this.loading = false));
+      },
+      updateContent() {
+        this.$router.push({
+          name: 'updatecontent',
+          params: {
+            items: this.items,
+            prevpage: "contentupdate",
+          }
+        })
       }
     },
     created() {
@@ -491,7 +529,7 @@
     },
     mounted() {
       $('html').scrollTop(0);
-      this.uid = store.state.user_id
+      this.uid = store.state.user_id;
     },
     updated() {
       let recaptchaScripta = document.createElement('script')
@@ -569,6 +607,14 @@
       margin-bottom: 30px;
       /* font-size: 20; */
     }
+  }
+
+  .bio-btn {
+    color: black;
+  }
+
+  .bio-btn:hover {
+    color: white;
   }
 
 

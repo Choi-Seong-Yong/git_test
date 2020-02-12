@@ -10,4 +10,5 @@ public interface IUserReportService {
     public boolean deleteReport(UserReportVo report);
     public List<UserReportVo> selectMyReport(String user_id);
     public List<ContentVo> reportContent(String user_id);
+    public List<ContentVo> adminreportContentList();
 }

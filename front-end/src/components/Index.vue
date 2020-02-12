@@ -1,96 +1,125 @@
 <template>
   <div class="container-fluid photos">
     <div class="row align-items-stretch">
-      
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" v-for="con in contents" :key="con.id">
-        <div class="d-block photo-item" v-if="con.images[0].imageUrl">
-          <div v-if="con.dislike < 5 || readContents.includes(con.contentId)" :class="con.images[0].filter">
-            <img :src="con.images[0].imageUrl" alt="Image" class="img-fluid pa m-0"/>
-            <!-- <div v-if="con.scrapButton && con.userId !== loginId" style="background-color:black;">
-              <p class="ch text-right text-white" >📥 {{con.userId}}님</p>
-            </div> 스크랩이 아닌 공유 기능으로 쓰기 --> 
-            <!-- <div v-if="con.scrapButton && con.userId == loginId" style="background-color:black">
-              <p class="ch text-right text-white" >📥 내 게시물</p>
-            </div> -->
+      <!-- 게시물 하나 -->
+      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" style="padding: 10px 10px" v-for="con in contents" :key="con.id">
+        <div class="d-block photo-item">
+          <!-- 이미지 처리 -->
+          <div class="polaroid" v-if="con.dislike < 5 && !reportMyList.includes(con.contentId) || readContents.includes(con.contentId)">
+            <div :class="con.images[0].filter" style="width:100%; height:100%">
+              <img :src="con.images[0].imageUrl" alt="Image" class="img-fluid pa m-0" style="box-shadow: 3px 3px 3px;"/>
+            </div>
           </div>
-          
-          <div v-show="con.dislike > 4 && !readContents.includes(con.contentId)" class="m-0 pin">
-            <img :src="con.images[0].imageUrl" alt="Image" class="img-fluid pa blur"/>
-            <p class="chcenter text-center text-white">신고가 누적된 게시물입니다.</p>
-            <button class="ch btn btn-primary btn-sm" @click="readReCon(con.contentId)">보기</button>
+          <div class="polaroid" v-show="con.dislike > 4 && !readContents.includes(con.contentId) && !reportMyList.includes(con.contentId)">
+            <div style="width:100%; height:100%">
+              <img :src="con.images[0].imageUrl" alt="Image" class="img-fluid pa blur m-0" style="box-shadow: 3px 3px 3px;"/>
+              <p class="centertext text-white">신고가 누적된 게시물입니다.</p>
+              <button class="centerbutton btn btn-primary btn-sm" @click="readReCon(con.contentId)">보기</button>
+            </div>
           </div>
-
-          <div v-show="reportMyList.includes(con.contentId)" class="m-0">
-            <img :src="con.images[0].imageUrl" alt="Image" class="img-fluid pa blur"/>
-            <p class="chcenter text-center text-white">내가 신고한 게시물입니다.</p>
+          <div class="polaroid" v-show="reportMyList.includes(con.contentId) && !readContents.includes(con.contentId)">
+            <div style="width:100%; height:100%">
+              <img :src="con.images[0].imageUrl" alt="Image" class="img-fluid pa blur m-0"/>
+              <div class="centertext">
+                <p class="text-white">내가 신고한 게시물입니다.</p>
+                <button class="btn btn-outline-light btn-sm py-0" @click="readReCon(con.contentId)">보기</button>
+              </div>
+            </div>
           </div>
-
-          <div class="photo-text-more" v-if="con.dislike < 5 || readContents.includes(con.contentId)">
-            <h3 class="heading mx-2 ellipsis" v-on:click="goDetail(con.contentId)">{{con.contentId}} {{con.contentValue}}</h3>
-            <span v-if="con.imageLength == 0" class="meta">there's no photo</span>
-            <span v-else-if="con.imageLength == 1" class="meta">photo just {{con.imageLength}}</span>
-            <span v-else class="meta">photos {{con.imageLength}}</span>
-
-            <div class="meta">
-              <div class="my-3 d-flex justify-content-around size text-white">
-                <div @click="clickHeart(con.contentId)">
-                  <i class="icon-heart" v-if="con.likeButton"></i>
-                  <i class="icon-heart-o" v-else></i>
-                </div>
-                <div @click="clickFollow(con.userId)" v-if="con.userId !== loginId">
-                  <i class="icon-check" v-if="followList.includes(con.userId)">{{con.userId}}</i>
-                  <i class="icon-user" v-else-if="con.userId==loginId">나</i>
-                  <i class="icon-user-plus" v-else>{{con.userId}}</i>
-                </div>
-                <div @click="clickScrap(con.contentId, con.scrapButton)" v-if="con.userId !== loginId">
-                  <i class="icon-bookmark" v-if="con.scrapButton"></i>
-                  <i class="icon-bookmark-o" v-else></i>
-                </div>
-
-                <div v-if="con.userId !== loginId">
-                  <i class="icon-bell-o" @click="cancel(con.contentId)"></i>
-                  <!-- <i class="icon-bell" @click="clickBell()"></i> -->
-
-
-                  <!-- <div class="btn-group dropleft">
-                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Dropleft
-                    </button>
-                    <div class="dropdown-menu">
-
+          <!-- 마우스 오버 했을 때 -->
+          <div class="photo-text-more" v-if="con.dislike < 5 && !reportMyList.includes(con.contentId) || readContents.includes(con.contentId)">
+            <div class="">
+              <div class="d-block photo-item">
+                <div class="postcard">
+                  <div class="content">
+                    <!-- 누르면 상세 페이지로 -->
+                    <div v-on:click="goDetail(con.contentId)">
+                      <!-- 우표 -->
+                      <div class="stamp-cover">
+                        <div class="stamp" style=" margin:1px; float:right; background-color:white; height:50px; width:50px;">
+                        </div>
+                      </div>
+                      <div class="stamp-img" style="top:25px;right:25px;height:43px;width:43px;background-color:white;"></div>
+                      <div style="width:37px;height:37px" class="stamp-img" :class="con.profileFilter">
+                        <img :src="con.profileUrl" style="width:37px;height:37px; background: none;" />
+                      </div>
+                      <img src="../../public/theme/images/stamp1.png" style="width:45px;height:45px;" alt="Postage mark" class="postmark">
+                      <!-- 우편 내용 -->
+                      <div class="mail-title offset-1 col-9 mt-2 ml-3 pb-" style="text-align:left;"><p class="mail-title-val">Dear {{ loginId }}</p></div>
+                      <div class="mail-message offset-2 pt-0 pb-0 col-8 ellipsis mail-message-val" v-html="con.contentValue">{{ con.contentValue }}</div>
+                      <div class="col-11 col-offset-1 pt-0 pr-0 mail-from-val">from {{ con.userId }}</div>
                     </div>
-                  </div> -->
-
-                  <div class="btn-group dropleft">
-                    <button class="btn btn-whatever btn-sm dropdown-toggle" style="font-size:13px;" type="button" id="dropdownMenu2" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
-                      <i class="icon-bell"></i>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                      <button class="dropdown-item" type="button" @click="clickBell(con.contentId, options[0].op1, options[0].op1, con.timestamp)">{{ options[0].op1 }}</button>
-                      <button class="dropdown-item" type="button" @click="clickBell(con.contentId, options[0].op2, options[0].op2, con.timestamp)">{{ options[0].op2 }}</button>
-                      <button class="dropdown-item" type="button" @click="down()">{{ options[0].op3 }}</button>
-                      <div class="dropdown-item" v-if="drop">
-                        <input class="col-8" type="text" placeholder="신고 내용을 입력해주세요.">
-                        <button @click="clickBell(con.contentId, options[0].op3, options[0].op4, con.timestamp)" class="col-4">send</button>
+                    <!-- buttons -->
+                    <div class="mb-4 pb-2 d-flex justify-content-around size content-button" style="font-size:1vw">
+                      <div @click="clickHeart(con.contentId)">
+                        <i class="icon-heart" v-if="con.likeButton"></i>
+                        <i class="icon-heart-o" v-else></i>
+                      </div>
+                      <div @click="clickFollow(con.userId)" v-if="con.userId !== loginId">
+                        <i class="icon-check" v-if="followList.includes(con.userId)">{{con.userId}}</i>
+                        <i class="icon-user-plus" v-else>{{con.userId}}</i>
+                      </div>
+                      <div @click="clickScrap(con.contentId, con.scrapButton)" v-if="con.userId !== loginId">
+                        <i class="icon-bookmark" v-if="con.scrapButton"></i>
+                        <i class="icon-bookmark-o" v-else></i>
+                      </div>
+                      <div v-if="con.userId !== loginId">
+                        <i class="icon-bell" v-if="reportMyList.includes(con.contentId)" @click="cancel(con.contentId)"></i>
+                        <i class="icon-bell-o" v-else id="reportId" data-toggle="modal" data-target="#exampleModal" @click="sendInfo(con.contentId, con.timestamp)"></i>
                       </div>
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
-          </div>
-
-          <div class="photo-text-more" v-else>
           </div>
 
         </div>
       </div>
 
+      <!-- Modal -->
+      <div class="modal fade mt-5" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">신고하기</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="btn-group dropright">
+                <button class="btn btn-whatever btn-sm dropdown-toggle" style="font-size:13px;" type="button" id="dropdownMenu2" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                  신고 사항 선택
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                  <button class="dropdown-item" type="button" @click="sendReport(options[0].op1)">{{ options[0].op1 }}</button>
+                  <button class="dropdown-item" type="button" @click="sendReport(options[0].op2)">{{ options[0].op2 }}</button>
+                  <button class="dropdown-item" type="button" @click="sendReport(options[0].op3)" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">{{ options[0].op3 }}</button>
+                </div>
+              </div>
+
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                  <input type="text" v-model="options[0].op4" placeholder="기타를 선택하신 분은 신고 내용을 입력해주세요.">
+                </div>
+                <input class="btn btn-outline-info" type="button" value="입력" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" @click="sendReport2(options[0].op4)">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" @click="clickBell()">신고하기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
+
     <div class="text-white text-center" v-if="this.contentErrorMsg">
       <h5>{{this.contentErrorMsg}}</h5>
     </div>
+    
   </div>
 </template>
 
@@ -113,8 +142,10 @@ export default {
           filter: "",
         }],
         scrapButton: false,
+        profileUrl: "",
+        profileFilter: "",
       }],
-      loginId: "",
+      loginId: store.state.user_id,
       contentErrorMsg: "",
       errored: false,
       userLikeList: [],
@@ -128,27 +159,47 @@ export default {
         op3: "기타",
         op4: "",
       }],
-      drop: false,
+      info: [],
     }
   },
   methods: {
+    sendInfo(cid, time) {
+      this.info = []
+      this.info.push({
+        content_id: cid,
+        user_id: this.loginId,
+        report_category: "",
+        report_val: "",
+        timestamp: time,
+      })
+    },
+    sendReport(report_category) {
+      this.info[0].report_category = report_category
+    },
+    sendReport2(report_val) {
+      this.info[0].report_val = report_val
+    },
     readReCon(cid) {
       this.readContents.push(cid)
     },
     getReport() {
+      this.reportMyList = []
       http
         .get('/userReport/myReportList/' + this.loginId)
         .then((res) => {
           if (res.data.resvalue.length > 0) {
-            this.reportMyList = res.data.resvalue
-          } 
+            console.log(res.data.resvalue)
+            for (var i = 0; i < res.data.resvalue.length; i++) {
+              this.reportMyList.push(res.data.resvalue[i].content_id)
+            }
+          }
         })
         .catch(() => {
           this.errored = true
         })
     },
     getLike() {
-      this.loginId = store.state.user_id
+      // this.loginId = store.state.user_id
       http
         .get('/userLike/userLikeList/' + this.loginId)
         .then((res) => {
@@ -156,7 +207,7 @@ export default {
             res.data.resvalue[i].user_like = true
             this.userLikeList.push({
               contentId: res.data.resvalue[i].content_id,
-              contentValue: res.data.resvalue[i].content_val,
+              contentValue: res.data.resvalue[i].content_val.replace(/\n/g, "<br />"),
               timestamp: res.data.resvalue[i].timestamp,
               likeButton: res.data.resvalue[i].user_like,
               userId: res.data.resvalue[i].user_id,
@@ -166,6 +217,8 @@ export default {
                 filter: res.data.resvalue[i].imageList[0].filter,
               }],
               dislike: res.data.resvalue[i].dislike,
+              profileUrl: res.data.resvalue[i].profile_url,
+              profileFilter: res.data.resvalue[i].profile_filter,
             })
           }
         })
@@ -204,23 +257,42 @@ export default {
                   delete this.userLikeList[idx2].contentId
                 }
                 if (this.userLikeList[idx2].contentId && idx == res.data.resValue.length - 1) {
-                  this.contents.push({
-                    contentId: this.userLikeList[idx2].contentId,
-                    contentValue: this.userLikeList[idx2].contentValue,
-                    timestamp: this.userLikeList[idx2].timestamp,
-                    likeButton: this.userLikeList[idx2].likeButton,
-                    userId: this.userLikeList[idx2].userId,
-                    imageLength: this.userLikeList[idx2].imageLength,
-                    images: this.userLikeList[idx2].images,
-                    scrapButton: false,
-                    dislike: this.userLikeList[idx2].dislike,
-                  })
+                  if (this.scrapList.includes(res.data.resValue[idx2].contentId)) {
+                    this.contents.push({
+                      contentId: this.userLikeList[idx2].contentId,
+                      contentValue: this.userLikeList[idx2].contentValue.replace(/\n/g, "<br />"),
+                      timestamp: this.userLikeList[idx2].timestamp,
+                      likeButton: this.userLikeList[idx2].likeButton,
+                      userId: this.userLikeList[idx2].userId,
+                      imageLength: this.userLikeList[idx2].imageLength,
+                      images: this.userLikeList[idx2].images,
+                      scrapButton: true,
+                      dislike: this.userLikeList[idx2].dislike,
+                      profileUrl: this.userLikeList[idx2].profileUrl,
+                      profileFilter: this.userLikeList[idx2].profileFilter,
+
+                    })
+                  } else {
+                    this.contents.push({
+                      contentId: this.userLikeList[idx2].contentId,
+                      contentValue: this.userLikeList[idx2].contentValue.replace(/\n/g, "<br />"),
+                      timestamp: this.userLikeList[idx2].timestamp,
+                      likeButton: this.userLikeList[idx2].likeButton,
+                      userId: this.userLikeList[idx2].userId,
+                      imageLength: this.userLikeList[idx2].imageLength,
+                      images: this.userLikeList[idx2].images,
+                      scrapButton: false,
+                      dislike: this.userLikeList[idx2].dislike,
+                      profileUrl: this.userLikeList[idx2].profileUrl,
+                      profileFilter: this.userLikeList[idx2].profileFilter,
+                    })
+                  }
                 }
               }
               if (this.scrapList.includes(res.data.resValue[idx].content_id)) {
                 this.contents.push({
                   contentId: res.data.resValue[idx].content_id,
-                  contentValue: res.data.resValue[idx].content_val,
+                  contentValue: res.data.resValue[idx].content_val.replace(/\n/g, "<br />"),
                   timestamp: res.data.resValue[idx].timestamp,
                   likeButton: res.data.resValue[idx].user_like,
                   userId: res.data.resValue[idx].user_id,
@@ -231,11 +303,13 @@ export default {
                   }],
                   scrapButton: true,
                   dislike: res.data.resValue[idx].dislike,
+                  profileUrl: res.data.resValue[idx].profile_url,
+                  profileFilter: res.data.resValue[idx].profile_filter,
                 })
               } else {
                 this.contents.push({
                   contentId: res.data.resValue[idx].content_id,
-                  contentValue: res.data.resValue[idx].content_val,
+                  contentValue: res.data.resValue[idx].content_val.replace(/\n/g, "<br />"),
                   timestamp: res.data.resValue[idx].timestamp,
                   likeButton: res.data.resValue[idx].user_like,
                   userId: res.data.resValue[idx].user_id,
@@ -246,10 +320,13 @@ export default {
                   }],
                   scrapButton: false,
                   dislike: res.data.resValue[idx].dislike,
+                  profileUrl: res.data.resValue[idx].profile_url,
+                  profileFilter: res.data.resValue[idx].profile_filter,
                 })
               }
             }
-            this.getReport()
+            this.sortList()
+            // this.getReport()
           } else {
             this.contentErrorMsg = "타임라인이 없습니다."
           }
@@ -262,7 +339,9 @@ export default {
       http
         .get('/follow/followList/' + this.loginId)
         .then((res) => {
-          this.followList = res.data.resvalue
+          for (var i = 0; i < res.data.resvalue.length; i++) {
+            this.followList.push(res.data.resvalue[i].user_id)
+          }
         })
         .catch(()=>{
           this.errored = true;
@@ -273,7 +352,7 @@ export default {
         return (a.timestamp < b.timestamp) ? - 1 : (a.timestamp > b.timestamp) ? 1 : 0;
       })
       this.contents.reverse()
-      this.getReport()
+      // this.getReport()
     },
     goDetail: function(con_id) {
       this.$router.push({
@@ -369,8 +448,6 @@ export default {
         if (idx > -1) {
           this.followList.splice(idx, 1)
         }
-      } else if (user == this.loginId) {
-        console.log("it's me")
       } else {
         http
           .post('/follow/insertFollow', {
@@ -404,7 +481,7 @@ export default {
                 if (this.scrapList.includes(idx.content_id)) {
                   this.contents.push({
                     contentId: idx.content_id,
-                    contentValue: idx.content_val,
+                    contentValue: idx.content_val.replace(/\n/g, "<br />"),
                     timestamp: idx.timestamp,
                     likeButton: idx.user_like,
                     userId: idx.user_id,
@@ -415,12 +492,14 @@ export default {
                     }],
                     scrapButton: true,
                     dislike: idx.dislike,
+                    profileUrl: idx.profile_url,
+                    profileFilter: idx.profile_filter
+
                   })
-                } 
-                else {
+                } else {
                   this.contents.push({
                     contentId: idx.content_id,
-                    contentValue: idx.content_val,
+                    contentValue: idx.content_val.replace(/\n/g, "<br />"),
                     timestamp: idx.timestamp,
                     likeButton: idx.user_like,
                     userId: idx.user_id,
@@ -431,10 +510,12 @@ export default {
                     }],
                     scrapButton: false,
                     dislike: idx.dislike,
+                    profileUrl: idx.profile_url,
+                    profileFilter: idx.profile_filter
                   })
                 }
-                this.sortList()
               }
+              this.sortList()
             })
           })
         .catch(()=>{
@@ -499,91 +580,77 @@ export default {
           })
       }
     },
-    clickBell(cid, cate, val, time) {
-      http
-        .post('/userReport/report', {
-          content_id: cid,
-          report_category: cate,
-          report_val: val,
-          timestamp: time,
-          user_id: this.loginId,
-        })
-        .then((res) => {
-          this.reportMyList = []
-          if (res.data.resmsg == "신고 성공") {
-            this.$socket.emit('notification', {
-                  user_id: res.data.resValue.user_id,
-                  target_user_id: res.data.resValue.target_user_id,
-                  category: res.data.resValue.category,
-                  flag:true
-                });
-            console.log("신고 성공!!")
-          } else {
-            console.log("신고 실패")
-          }
-          this.options[0].op4 = ""
-          this.drop = false
-        })
-        .catch(()=>{
-          this.errored = true;
-        })
+    clickBell() {
+      if (this.info[0].report_category == "") {
+        this.$store.commit('setModalText', "신고 사항을 선택해주십시오.");
+        document.getElementById('modalBtn').click();
+      } else if (this.info[0].report_category == "기타" && this.info[0].report_val == "") {
+        this.$store.commit('setModalText', "기타를 선택하신 이유를 적어주십시오.");
+        document.getElementById('modalBtn').click();
+      } else {
+        http
+          .post('/userReport/report', {
+            content_id: this.info[0].content_id,
+            report_category: this.info[0].report_category,
+            report_val: this.info[0].report_val,
+            timestamp: this.info[0].timestamp,
+            user_id: this.loginId,
+          })
+          .then((res) => {
+            this.reportMyList = []
+            if (res.data.resmsg == "신고 성공") {
+              this.$store.commit('setModalText', "신고가 접수되었습니다.");
+              document.getElementById('modalBtn').click();
+            } else {
+              console.log("신고 실패")
+            }
+            this.options[0].op4 = ""
+            this.info = []
+            this.getReport()
+          })
+          .catch(()=>{
+            this.errored = true;
+          })
+      }
     },    
     cancel(cid) {
-      if (this.reportMyList.length > 0) {
-        this.reportMyList.forEach(element => {
-          if (cid == element.content_id) {
-            http
-              .delete('/userReport/deleteReport', {
-                data: {
-                  content_id: cid,
-                  report_category: null,
-                  report_val: null,
-                  timestamp: null,
-                  user_id: this.loginId,
-                }
+      if (this.reportMyList.includes(cid)) {
+        http
+          .delete('/userReport/deleteReport', {
+            data: {
+              content_id: cid,
+              report_category: null,
+              report_val: null,
+              timestamp: null,
+              user_id: this.loginId,
+            }
+          })
+          .then((res) => {
+            if (res.data.resmsg == "신고취소성공") {
+              const idx = this.reportMyList.findIndex(function(item) {
+                return item === res.data.resValue.target_event_id
               })
-              .then((res) => {
-                console.log(res.data.resmsg)
-                if (res.data.resmsg == "신고취소성공") {
-                  this.$socket.emit('notification', {
-                    user_id: res.data.resValue.user_id,
-                    target_user_id: res.data.resValue.target_user_id,
-                    category: res.data.resValue.category,
-                    flag:false
-                  });
-                  this.reportMyList = []
-                }
-              })
-              .catch(()=>{
-                this.errored = true;
-              })
-          }
-        })
+              this.reportMyList.splice(idx, 1)
+              this.$store.commit('setModalText', "신고가 취소되었습니다.");
+              document.getElementById('modalBtn').click();            
+            } else {
+              this.$store.commit('setModalText', "신고가 취소되지 않았습니다.");
+              document.getElementById('modalBtn').click();            
+            }
+            this.sortList()
+          })
+          .catch(()=>{
+            this.errored = true;
+          })
       }
     },
-    down() {
-      this.drop = true
-    },
   },
-  created() {
+  mounted() {
     this.getLike()
     this.getScrap()
     this.getData()
     this.getFollow()
-  },
-  watch: {
-    reportMyList: {
-      handler() {
-        this.getReport()
-      }
-    },
-    // readContents: {
-    //   handler() {
-    //     this.readReCon()
-    //   }
-    // }
-  },
-  mounted() {
+    this.sortList()
     this.getReport()
     $('html').scrollTop(0);
     this.$nextTick(() => {
@@ -599,39 +666,59 @@ export default {
   },
 }
 </script>
-<style>
-  .ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    word-wrap: break-word;
-    line-height: 2;
-    height: 6rem;
-  }
+<style scoped>
+
   .pa {
     position: relative;
   }
-  .ch {
+  .centertext {
     position: absolute;
-    top: 1px;
-    right: 10px;
+    text-align: center;
+    padding: 5px;
+    display: block;
+    top: 37%;
+    left: 50%;
+    background-color: #333;
     font-size: 13px;
+    transform: translateY(-50%);
+    transform: translateX(-50%);
   }
-  .chcenter {
+  .centerbutton {
     position: absolute;
-    top: 40%;
+    text-align: center;
+    display: block;
+    top: 45%;
+    left: 50%;
+    margin-top: 70px;
+    background-color: #333;
+    transform: translateY(-50%);
+    transform: translateX(-50%);
   }
   .blur {
-    filter:blur(5px);
-    transform: scale(0.98);
-    width: 90%;
-    height: 90%;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    opacity: 0.7;
+    /* transform: scale(1); */
+    overflow: hidden;
+    display: block;
+    width: 80%;
+    height: 80%;
   }
-  .pin {
-    left: 50%;
-    top: 50%;
-    margin-left: 50%
+  .modal-dialog { 
+      width: 30%; 
+      height: 50%;
+  }
+  .modal-content{
+    height: auto;
+    min-height: 100%;
+  }
+  .mydiv {
+    margin-top: 7em;
+  }
+  .size {
+    font-size: 1em;
   }
 </style>

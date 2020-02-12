@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5bb01a38-8b76-46b3-8b9b-9e680786fe5b" name="Default Changelist" comment="" />
+    <list default="true" id="5bb01a38-8b76-46b3-8b9b-9e680786fe5b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/controller/UserDmController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/controller/UserDmController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/repository/IUserDmDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/repository/IUserDmDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/repository/UserDmDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/repository/UserDmDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/service/IUserDmService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/service/IUserDmService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/service/UserDmService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/src/main/java/edu/ssafy/boot/service/UserDmService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../back-end/src/main/resources/mybatis/directMessageSQLMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/src/main/resources/mybatis/directMessageSQLMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../back-end/src/main/resources/mybatis/userDmSQLMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/src/main/resources/mybatis/userDmSQLMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../chat_server-master/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/../chat_server-master/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front-end/src/components/Chating.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../front-end/src/components/Chating.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front-end/src/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/../front-end/src/store.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,8 +44,9 @@
       <usages-collector id="statistics.lifecycle.project">
         <counts>
           <entry key="project.closed" value="2" />
-          <entry key="project.open.time.3" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.open.time.2" value="1" />
+          <entry key="project.open.time.3" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
     </session>
@@ -44,8 +56,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="13" column="12" lean-forward="true" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+            <state relative-caret-position="-532">
+              <caret line="20" column="43" lean-forward="true" selection-start-line="20" selection-start-column="43" selection-end-line="20" selection-end-column="43" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
                 <marker date="1580976940464" expanded="true" signature="2653:2656" ph="..." />
@@ -176,14 +188,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24983476" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2247191" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.328125" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.328125" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -222,8 +234,8 @@
     <entry file="file://$PROJECT_DIR$/test2.py" />
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="13" column="12" lean-forward="true" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+        <state relative-caret-position="-532">
+          <caret line="20" column="43" lean-forward="true" selection-start-line="20" selection-start-column="43" selection-end-line="20" selection-end-column="43" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
             <marker date="1580976940464" expanded="true" signature="2653:2656" ph="..." />

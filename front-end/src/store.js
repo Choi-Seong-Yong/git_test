@@ -4,14 +4,16 @@ import http from './http-common.js';
 
 Vue.use(Vuex)
 
-const debug = process.env.NODE_ENV !== 'production';
+// const debug = process.env.NODE_ENV !== 'production';
 
 export default new Vuex.Store({
-    strict: debug,
+    // strict: debug,
+    strict:false,
     state:{
         modalText: localStorage.getItem('modalText'),
         user_id:sessionStorage.getItem('user_id'),
         islogin:false,
+        isadmin:false,
         first:sessionStorage.getItem("first"),
         allDmList: [],
         userDmList: [],
@@ -19,7 +21,8 @@ export default new Vuex.Store({
         followList: [],
         followerList: [],
         unReadCnt: 0,
-        targetDm: {},
+        noticount:0,
+        targetDm: null,
     },
     getters:{
         fetchedUserDmList(state) {
@@ -37,6 +40,10 @@ export default new Vuex.Store({
         fetchedUnReadCnt(state) {
             return state.unReadCnt;
         },
+        fetchednoticount(state) {
+            state.noticount = sessionStorage.getItem("noticount");
+            return state.noticount;
+        },
     },
     mutations:{
         getModalText(state){
@@ -50,6 +57,8 @@ export default new Vuex.Store({
             state.user_id = sessionStorage.getItem('user_id');
             if(sessionStorage.getItem('islogin')!=null)
                 state.islogin = sessionStorage.getItem('islogin');
+            if(sessionStorage.getItem('isadmin')!=null)
+                state.isadmin = sessionStorage.getItem('isadmin');
             // state.first = sessionStorage.getItem('first');
         },
         login(state, user_id) {
@@ -57,6 +66,12 @@ export default new Vuex.Store({
             state.user_id = sessionStorage.getItem('user_id');
             sessionStorage.setItem("islogin", true);
             state.islogin = sessionStorage.getItem('islogin');
+            if(state.islogin && (state.user_id == 'admin1' || state.user_id == 'admin2' || state.user_id == 'admin3' || state.user_id == 'admin4' || state.user_id == 'admin5')){
+                sessionStorage.setItem("isadmin", true);
+            }else{
+                sessionStorage.setItem("isadmin", false);
+            }
+            state.isadmin = sessionStorage.getItem('isadmin');
             sessionStorage.setItem("first", false);
             state.first = sessionStorage.getItem("first");
             localStorage.setItem("modalText", '로그인 되었습니다.');
@@ -65,13 +80,18 @@ export default new Vuex.Store({
         setid(state){
             state.user_id = sessionStorage.getItem('user_id');
             state.islogin = sessionStorage.getItem('islogin');
+            state.isadmin = sessionStorage.getItem('isadmin');
             state.first = sessionStorage.getItem('first');
         },
         logout(state){
             sessionStorage.removeItem("user_id");
             sessionStorage.removeItem("islogin");
+            sessionStorage.removeItem("isadmin");
+            sessionStorage.removeItem("noticount");
             state.user_id='';
+            state.noticount=0;
             state.islogin=false;
+            state.isadmin=false;
             state.userDmList = [];
             state.directMessageList = [];
             state.followList = [];
@@ -124,7 +144,11 @@ export default new Vuex.Store({
         },
         REMOVE_TARGETDM(state){
             state.tagetDM = {};
-        }
+        },
+        SET_NOTI(state, noticount) {
+            sessionStorage.setItem("noticount",noticount)
+            state.noticount = sessionStorage.getItem("noticount");
+        },
     },
     actions:{
         FETCH_USERDMLIST(context, userId) {
@@ -228,11 +252,12 @@ export default new Vuex.Store({
                 })
                 .catch(e => console.log(e))
         },
-        DELETE_FOLLOW(context, follow) {
+        FETCH_NOTI(context, userid) {
             http
-                .delete("/follow/deleteFollow", follow)
+                .get(`/notification/uncheckedList/${userid}`)
                 .then(response => {
-                    return response
+                    context.commit('SET_NOTI', response.data.resvalue.length);
+                    return response.data.resvalue.length;
                 })
                 .catch(e => console.log(e))
         },

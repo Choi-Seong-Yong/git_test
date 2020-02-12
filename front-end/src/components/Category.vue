@@ -1,16 +1,16 @@
 <template>
     <div class="container-fluid photos">
       <div class="row align-items-stretch">
-        <div class="col-6 col-md-6 col-lg-4" style="padding: 10px 10px" v-for="item in Items" :key="item.id">
+        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" style="padding: 10px 10px" v-for="item in Items" :key="item.id">
           <div class="d-block photo-item">
             <div class="polaroid">
-                <div v-on:click="goDetail(item.content_id)" :class="item.imageList[0].filter" class="" style="width:100%; height:300px">
+                <div v-on:click="goDetail(item.content_id)" :class="item.imageList[0].filter" style="width:100%; height:100%">
                   <img :src="item.imageList[0].image_url" style="box-shadow: 3px 3px 3px;" alt="Image"/>
                   <!-- <div style="text-align:right;">from {{item.user_id}}</div> -->
                 </div>
             </div>
             <!-- -->
-              <div class="photo-text-more">
+              <div class="photo-text-more" style="">
                 <!-- <div class="" data-aos="fade-up"> -->
                 <div class="">
                   <div class="d-block photo-item">
@@ -22,17 +22,15 @@
                             <div class="stamp" style=" margin:1px; float:right; background-color:white; height:50px; width:50px;">
                             </div>
                           </div>
-                          <div v-if="item.profile_url != null" style="width:37px;height:37px" class="stamp-img" :class="item.profile_filter">
+                          <div class="stamp-img" style="top:25px;right:25px;height:43px;width:43px;background-color:white;"></div>
+                          <div style="width:37px;height:37px" class="stamp-img" :class="item.profile_filter">
                             <img :src="item.profile_url" style="width:37px;height:37px; background: none;" />
-                          </div>
-                          <div v-else>
-                            <img src="../../public/theme/images/ai.jpg" style="width:37px;height:37px;" class="stamp-img"/>
                           </div>
                           <img src="../../public/theme/images/stamp1.png" style="width:45px;height:45px;" alt="Postage mark" class="postmark">
                           <!-- 끝 -->
-                          <div class="mail-title offset-1 col-9" style="text-align:left;"><p style="color:black; font-size:2em; font-family: loveson;">Dear {{uid}}</p></div>
-                          <div class="mail-message offset-2 col-8 ellipsis" style="color:black; font-family: loveson; word-break:break-all;text-align:left;">{{item.content_val}}</div>
-                          <div class="col-11 col-offset-1" style="color:black; font-family: loveson; word-break:break-all;text-align:right;">from {{item.user_id}}</div>
+                          <div class="mail-title offset-1 col-9" style="text-align:left;"><p class="mail-title-val">Dear {{uid}}</p></div>
+                          <div class="mail-message offset-2 col-8 ellipsis mail-message-val">{{item.content_val}}</div>
+                          <div class="col-11 col-offset-1 mail-from-val">from {{item.user_id}}</div>
                         </div>
                         <div class="mb-3 my-3 d-flex justify-content-around size content-button">
                           <div @click="clickHeart(item.content_id)">
@@ -303,16 +301,6 @@ export default {
   }
   #text-color {
     color: white;
-  }
-  .ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    word-wrap: break-word;
-    line-height: 2;
-    height: 6rem;
   }
   .size {
     font-size: 1em;

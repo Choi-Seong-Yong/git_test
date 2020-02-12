@@ -30,4 +30,11 @@
 		delete from user_report
 		where content_id = #{content_id}
 	</select>
+	
+	<select id="adminreportContentList" resultType="ContentVo">
+		select *
+		from contents
+		where dislike>=5;
+	</select>
+	
 </mapper>

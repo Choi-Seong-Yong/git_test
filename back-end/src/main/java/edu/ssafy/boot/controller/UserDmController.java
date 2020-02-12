@@ -38,10 +38,12 @@ public class UserDmController {
     private @ResponseBody ResponseEntity<Map<String, Object>> insertUserDm(@RequestBody UserDmVo userDm) {
         ResponseEntity<Map<String, Object>> resEntity = null;
         try {
-            boolean insert = ser.insertUserDm(userDm);
+            UserDmVo resultDm = ser.insertUserDm(userDm);
             Map<String, Object> map = new HashMap<String, Object>();
-            if (insert)
+            if (resultDm != null){
                 map.put("resmsg", "DM목록추가성공");
+                map.put("resValue", resultDm);
+            }
             else
                 map.put("resmsg", "1DM목록추가실패");
             resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
@@ -54,9 +56,9 @@ public class UserDmController {
         return resEntity;
     }
 
-    @DeleteMapping("/deleteUserDm")
+    @DeleteMapping("/deleteUserDm/{dm_id}")
     @ApiOperation(value = "DM목록삭제")
-    private @ResponseBody ResponseEntity<Map<String, Object>> deleteUserDm(@RequestBody int dm_id) {
+    private @ResponseBody ResponseEntity<Map<String, Object>> deleteUserDm(@PathVariable("dm_id") int dm_id) {
         ResponseEntity<Map<String, Object>> resEntity = null;
         try {
             boolean delete = ser.deleteUserDm(dm_id);

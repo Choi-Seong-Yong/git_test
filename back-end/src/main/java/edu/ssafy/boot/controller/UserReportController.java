@@ -1,8 +1,12 @@
 package edu.ssafy.boot.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -140,6 +144,18 @@ public class UserReportController {
         }
         return resEntity;
     }
-    
+    @GetMapping("/adminreportContentList")
+	@ApiOperation(value = "타임라인 출력", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> adminreportContentList() throws ServletException, IOException {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		List<ContentVo> list = ser.adminreportContentList();
+//		System.out.println(list.toString());
+		msg.put("resmsg", "타임라인 출력 성공");
+		msg.put("resValue", list);
+		
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
 }
     
