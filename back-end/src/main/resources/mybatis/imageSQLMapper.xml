@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssafy.image">
+	<select id="selectList" parameterType="int" resultType="string">
+		select image_url
+		from content_image
+		where content_id = #{content_id}
+	</select>
+
+	<insert id="insert" parameterType="ImageVo">
+		insert into content_image
+			(content_id, image_name, image_url, filter)
+		values
+			(#{content_id}, #{image_name}, #{image_url}, #{filter})
+	</insert>
+
+	<insert id="tmpInsert" parameterType="ImageVo">
+		insert into content_image
+			(image_name, image_url)
+		values
+			(#{image_name}, #{image_url})
+	</insert>
+
+	<delete id="cancel" parameterType="string">
+		delete from content_image
+		where contains(image_name, #{user_id});
+	</delete>
+
+	<delete id="delete" parameterType="int">
+		delete from content_image
+		where content_id = #{content_id}
+	</delete>
+
+	<select id="imageList" parameterType="int" resultType="ImageVo">
+		select * from content_image
+		where content_id = #{content_id}
+	</select>
+
+	<delete id="deleteReported" parameterType="int">
+		delete from content_image
+		where content_id = #{content_id}
+	</delete>
+
+	<select id="selectImageNames" parameterType="int" resultType="string">
+		select image_name from content_image
+		where content_id = #{content_id}
+	</select>
+</mapper>
